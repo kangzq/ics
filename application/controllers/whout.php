@@ -21,6 +21,35 @@ class Whout extends CI_Controller {
 	{
 		$this->load->view('whout');
 	}
+
+	public function create()
+	{
+		$input = $this->input->post();
+
+		$this->load->model('Whout_order', 'whout', true);
+
+		$this->whout->insert_order();
+
+		$status = $this->db->trans_status() ? 1 : 0;
+		$msg = 0==$status ? 'Duplicate order #' : '';
+
+		$ret = array("status"=> $status, 'msg'=> $msg);
+		header("Content-type:application/json;charset=utf8");
+		exit(json_encode($ret));
+	}
+
+	public function sku_left()
+	{
+		$this->load->model('Whout_order', 'whout', true);
+
+		$item_sku = $this->input->post('item_sku');
+		$left = $this->whout->get_sku_left($item_sku);
+
+		$status = $left>0 ? 1 : 0;
+		$ret = array("status"=> $status, "left" => $left);
+		header("Content-type:application/json;charset=utf8");
+		exit(json_encode($ret));
+	}
 }
 
 /* End of file welcome.php */

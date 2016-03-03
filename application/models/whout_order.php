@@ -32,21 +32,57 @@ class Whout_order extends CI_Model {
             $quantity = intval($item["box_num"]);
 
             // get storage.id with $item_sku
+            $this->db->select("id,item_left");
+            $this->db->from('storage');
+            $this->db->where('item_sku', $item_sku);
+            $this->db->order_by('created','asc');
+            $query = $this->db->get();
 
-    		$db_item = array(
-    			"oid" => $this->order_id,
-    			"item_sku" => $item["sku"],
-    			"quantity" => intval($item["box_num"]),
-    			"item_from" => $item["quantity"],
-                "item_to" => $item["quantity"],
-                "remark" => $item["remark"],
-    			"created" => $this->created
-    		);
+            foreach ($query->result_array() as $row)
+            {
+                // update storage table item_left
+                $left = $row['item_left'] - $quantity;
+                $tmp_qtt = $quantity;
+                if($left<0){
+                    $left = 0;
+                    $tmp_qtt = $row['item_left'];
+                }
+                $this->db->update('storage', array('item_left'=> $left), array('id'=>$row["id"] ));
 
-    		$this->db->insert('storage', $db_item);
+                // insert out_order_detail
+                $db_item = array(
+                    "oid" => $this->order_id,
+                    "item_id" => $row["id"],
+                    "quantity" => intval($tmp_qtt),
+                    "item_from" => $item["item_from"],
+                    "item_to" => $item["item_to"],
+                    "remark" => $item["remark"]
+                );
+
+                $this->db->insert('out_order_detail', $db_item);
+
+                if($row['item_left'] > $quantity){
+                    break;
+                }
+                else{
+                    $quantity -= $row['item_left'];
+                }
+            }
     	}
 
     	$this->db->trans_complete();
+    }
+
+    function get_sku_left($item_sku){
+        $this->db->select_sum('item_left');
+        $this->db->from('storage');
+        $this->db->where('item_sku', $item_sku);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0){
+           $row = $query->row_array();
+           return intval($row['item_left']);
+        }
+        return 0;
     }
 
     /*
