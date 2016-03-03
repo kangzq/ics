@@ -18,8 +18,8 @@
 </div>
 <div class="container row-fluid" style="width:90%;margin-top: 20px;">
 	<table class="table table-bordered table-striped">
-		<tr><td>UserA</td><td></td><td></td><td></td></tr>
-		<tr><td>UserB</td><td></td><td></td><td></td></tr>
+		<tr><th>PO NO.</th><th>ITEM</th><th>TOTAL</th><th># REMAINING</th><th width="50%">DETAILS</th></tr>
+		<tr><td></td><td></td><td></td><td></td><td></td></tr>
 	</table>
 </div>
 
