@@ -85,6 +85,28 @@ class Whout_order extends CI_Model {
         return 0;
     }
 
+    function get_order_detail($oid){
+        $this->db->select();
+        $this->db->from('out_orders');
+        $this->db->where('id', $oid);
+        $query = $this->db->get();
+        $ret = array();
+        if ($query->num_rows() > 0){
+           $ret = $query->row_array();
+        }
+
+        $this->db->select();
+        $this->db->from('out_order_detail o');
+        $this->db->join('storage s', "o.item_id=s.id");
+        $this->db->where('o.oid', $oid);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0){
+            $ret["list"] = $query->result_array();
+        }
+
+        return $ret;
+    }
+
     /*
     function get_last_ten_entries()
     {
