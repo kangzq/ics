@@ -17,25 +17,47 @@
 	</div>
 </div>
 <div class="container row-fluid" style="width:90%;margin-top: 20px;">
+	<div class="">
+		<form class="form-search" id="search_form" onsubmit="load_list();return false;">
+			<input type="text" name="filter[pono]" class="input-small" placeholder="PO NO." maxlength="10" />
+			<input type="text" name="filter[sku]" id="sku_search" class="input-medium" placeholder="Item SKU" maxlength="20" />
+			<input type="text" name="filter[date]" class="input-medium" placeholder="Date" maxlength="12" />
+			<input type="hidden" name="page" id="page" value="1" />
+			<button type="submit" class="btn btn-primary">Search</button>
+			<button type="reset" class="btn">Reset</button>
+		</form>
+	</div>
 	<table class="table table-bordered table-striped" id="item_list">
 		<tr><th rowspan=2>PO NO.</th><th rowspan=2>ITEM</th><th rowspan=2>TOTAL</th><th rowspan=2># REMAINING</th><th colspan=5 width="50%">DETAILS</th></tr>
 		<tr><td>Date</td><td>From->To</td><td># Boxs</td><td>Reamrk</td><td>Action</td></tr>
 	</table>
+	<div class="pagination pagination-right">
+	  <ul>
+	    <li class="disabled"><a href="#">Prev</a></li>
+	    <li class="active"><a href="#">1</a></li>
+	    <li><a href="#">2</a></li>
+	    <li><a href="#">3</a></li>
+	    <li><a href="#">4</a></li>
+	    <li><a href="#">5</a></li>
+	    <li><a href="#">Next</a></li>
+	  </ul>
+	</div>
 </div>
 
 
 <script type="text/javascript" src="media/js/jquery-1.10.1.min.js"></script>
 <script type="text/javascript" src="media/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://v2.bootcss.com/assets/js/bootstrap-typeahead.js"></script>
 <script type="text/javascript">
 function load_list(){
 
-	$.get('warehouse/item_list', {"a": 1, "b":2}, function(data){
-		console.log(data);
+	$.get('warehouse/item_list', $("#search_form").serialize(), function(data){
 		render_list(data);
 	})
 }
 
 function render_list(data){
+	$("#item_list tr:gt(1)").empty();
 	if(data && data.total>0){
 		var cnt = data.list.length;
 		var html = '', item;
@@ -67,15 +89,70 @@ function render_list(data){
 			$("#item_list").append(html);
 		};
 		$("#item_list tr:gt(1)").find("td:nth-child(3),td:nth-child(4),td:nth-child(7)").css({"text-align": "right"})
+		pagenation(data.page, data.total_page);
 	}
 	else{
-		//$("#item_list").
+		$("#item_list").append('<tr><td colspan="9">No item found.</td></tr>')
+		pagenation(1, 1);
 	}
+}
+
+function pagenation(cur, total){
+	var pg = $(".pagination ul");
+	pg.empty();
+
+	if(1==cur){
+		pg.append('<li class="disabled"><span>Prev</span></li>')
+	}
+	else{
+		pg.append('<li><a href="javascript:;" onclick="prev_page()">Prev</a></li>')
+	}
+
+	for (var i = 1; i <= total; i++) {
+		if(i==cur) pg.append('<li class="active"><span>'+i+'</span></li>')
+		else pg.append('<li><a href="javascript:;" onclick="goto_page('+i+')">'+i+'</a></li>')
+	};
+
+	if(cur == total){
+		pg.append('<li class="disabled"><span>Next</span></li>')
+	}
+	else{
+		pg.append('<li><a href="javascript:;" onclick="next_page()">Next</a></li>')
+	}
+}
+
+function goto_page(page){
+	$("#page").val(page);$("#search_form").submit();
+}
+
+function prev_page(){
+	var page = $("#page").val();
+	page -= 1;
+	if(page<1) page =1;
+	goto_page(page);
+}
+
+function next_page(){
+	var page = $("#page").val();
+	var l= $(".pagination li").length - 1;
+	var max = $(".pagination li:nth-child(" + l + ")").text()
+	page = parseInt(page) + 1;
+	if(page>max) page = max;
+	goto_page(page);
 }
 
 $(function(){
 	load_list();
 	$("#item_list tr:gt(1)").find("td:nth-child(3),td:nth-child(4),td:nth-child(7)").css({"text-align": "right"})
+
+	$('#sku_search').typeahead({
+	    source: function (query, process) {
+	        var parameter = {query: query};
+	        $.get('warehouse/sku_list', parameter, function (data) {
+	            process(data);
+	        });
+	    }
+	});
 });
 </script>
 

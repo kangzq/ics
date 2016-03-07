@@ -49,7 +49,7 @@
 	</div>
 	<div class="hide"><table id="tr_template">
 		<tr><td>_IDX_</td>
-			<td><input type="text" name="item[_IDX_][sku]" value="" placeholder="SKU #" class="input-large" required maxlength="16" onblur="get_sku_left(this);"/></td>
+			<td><input type="text" name="item[_IDX_][sku]" value="" placeholder="SKU #" class="input-large sku_input" required maxlength="16" onblur="get_sku_left(this);"/></td>
 			<td class="sku_left">0</td>
 			<td><input type="number" name="item[_IDX_][box_num]" value="" placeholder="Boxes #" class="input-mini box_num" min=1 required/></td>
 			<td><input type="text" name="item[_IDX_][item_from]" value="" class="input-mini" placeholder="From" maxlength="32" required /></td>
@@ -61,6 +61,7 @@
 
 <script type="text/javascript" src="media/js/jquery-1.10.1.min.js"></script>
 <script type="text/javascript" src="media/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://v2.bootcss.com/assets/js/bootstrap-typeahead.js"></script>
 <script type="text/javascript">
 function submit_form(){
 	$(".alert").hide();
@@ -101,6 +102,18 @@ function add_row(){
 	var tb = $("#item_data");
 	var tmplt = $("#tr_template tbody").html().replace(/_IDX_/g, (tb.find("tr").length));
 	tb.append(tmplt);
+	bind_typeahead()
+}
+
+function bind_typeahead(){
+	$('.sku_input').typeahead({
+	    source: function (query, process) {
+	        var parameter = {query: query};
+	        $.get('warehouse/sku_list', parameter, function (data) {
+	            process(data);
+	        });
+	    }
+	});
 }
 
 $(function(){

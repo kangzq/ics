@@ -34,6 +34,15 @@ class Warehouse extends CI_Controller {
 		header("Content-type:application/json;charset=utf8");
 		exit(json_encode($ret));
 	}
+
+	public function sku_list(){
+		$this->load->model('Wh', 'wh', true);
+
+		$ret = $this->wh->sku_list();
+		
+		header("Content-type:application/json;charset=utf8");
+		exit(json_encode($ret));
+	}
 }
 
 /* End of file welcome.php */
