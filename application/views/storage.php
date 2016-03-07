@@ -5,8 +5,49 @@
 	<title>Welcome_WAREHOUSE</title>
 	<link href="media/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="shortcut icon" href="media/image/favicon.ico" />
+	<style type="text/css">
+
+
+      /* Sticky footer styles
+      -------------------------------------------------- */
+
+      html,
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
+
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -30px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #footer {
+        height: 30px;
+      }
+      #footer {
+        background-color: #f5f5f5;
+      }
+
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+
+    </style>
 </head>
-<body> 
+<body>
+<div id="wrap"> 
 <div class="container row-fluid" style="width:90%">
 	<div class="navbar">
 	    <ul class="nav nav-tabs" style="width:100%">
@@ -34,6 +75,11 @@
 	<div class="pagination pagination-right">
 	  <ul></ul>
 	</div>
+</div>
+</div>
+
+<div class="footer" id="footer">
+	<div class="container"><p>Powered by <a href="mailto:xeon.kang@qq.com">Kang</a></p></div>
 </div>
 
 <!-- Modal -->
