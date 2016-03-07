@@ -50,6 +50,14 @@ class Whout extends CI_Controller {
 		header("Content-type:application/json;charset=utf8");
 		exit(json_encode($ret));
 	}
+
+	public function detail($oid){
+		$this->load->model('Whout_order', 'whout', true);
+
+		$data = $this->whout->get_order_detail($oid);
+
+		$this->load->view('whout_order_detail', $data);
+	}
 }
 
 /* End of file welcome.php */

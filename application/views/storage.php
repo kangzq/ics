@@ -32,16 +32,22 @@
 		<tr><td>Date</td><td>From->To</td><td># Boxs</td><td>Reamrk</td><td>Action</td></tr>
 	</table>
 	<div class="pagination pagination-right">
-	  <ul>
-	    <li class="disabled"><a href="#">Prev</a></li>
-	    <li class="active"><a href="#">1</a></li>
-	    <li><a href="#">2</a></li>
-	    <li><a href="#">3</a></li>
-	    <li><a href="#">4</a></li>
-	    <li><a href="#">5</a></li>
-	    <li><a href="#">Next</a></li>
-	  </ul>
+	  <ul></ul>
 	</div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="Order Detail" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Order Detail</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
 </div>
 
 
@@ -79,7 +85,7 @@ function render_list(data){
 				html += item.detail[j].item_from + '->';
 				html += item.detail[j].item_to + '</td><td>';
 				html += item.detail[j].quantity + '</td><td>';
-				html += item.detail[j].remark + '</td><td><a href="whout/detail/';
+				html += item.detail[j].remark + '</td><td><a data-toggle="modal"  data-target="#modal" href="whout/detail/';
 				html += item.detail[j].oid + '">View order</a></td>';
 				html += '</tr>';
 			};
