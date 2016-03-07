@@ -21,6 +21,19 @@ class Warehouse extends CI_Controller {
 	{
 		$this->load->view('storage');
 	}
+
+	public function item_list()
+	{
+		//$this->load->view('storage');
+		//$ret = array("page"=> 1, "total"=> 10, "total_page"=> 3, "list" =>array() );
+
+		$this->load->model('Wh', 'wh', true);
+
+		$ret = $this->wh->load_list();
+		
+		header("Content-type:application/json;charset=utf8");
+		exit(json_encode($ret));
+	}
 }
 
 /* End of file welcome.php */

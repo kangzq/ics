@@ -32,8 +32,10 @@ class Whin extends CI_Controller {
 		$this->whin->insert_order();
 
 		$status = $this->db->trans_status() ? 1 : 0;
+		$msg = 0==$status ? 'Duplicate order #' : '';
 
-		$ret = array("status"=> $status);
+		$ret = array("status"=> $status, 'msg'=> $msg);
+
 		header("Content-type:application/json;charset=utf8");
 		exit(json_encode($ret));
 	}
