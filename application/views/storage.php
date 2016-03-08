@@ -4,47 +4,10 @@
 	<meta charset="utf-8">
 	<title>Welcome_WAREHOUSE</title>
 	<link href="media/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<link href="media/css/ics.css" rel="stylesheet" type="text/css"/>
 	<link rel="shortcut icon" href="media/image/favicon.ico" />
-	<style type="text/css">
-
-
-      /* Sticky footer styles
-      -------------------------------------------------- */
-
-      html,
-      body {
-        height: 100%;
-        /* The html and body elements cannot have any padding or margin. */
-      }
-
-      /* Wrapper for page content to push down footer */
-      #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -30px;
-      }
-
-      /* Set the fixed height of the footer here */
-      #footer {
-        height: 30px;
-      }
-      #footer {
-        background-color: #f5f5f5;
-      }
-
-      /* Lastly, apply responsive CSS fixes as necessary */
-      @media (max-width: 767px) {
-        #footer {
-          margin-left: -20px;
-          margin-right: -20px;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
-      }
-
-    </style>
+	
 </head>
 <body>
 <div id="wrap"> 
@@ -62,7 +25,7 @@
 		<form class="form-search" id="search_form" onsubmit="load_list();return false;">
 			<input type="text" name="filter[pono]" class="input-small" placeholder="PO NO." maxlength="10" />
 			<input type="text" name="filter[sku]" id="sku_search" class="input-medium" placeholder="Item SKU" maxlength="20" />
-			<input type="text" name="filter[date]" class="input-medium" placeholder="Date" maxlength="12" />
+			<input type="text" name="filter[date]" class="input-medium js-datepicker" placeholder="Date" maxlength="12" />
 			<input type="hidden" name="page" id="page" value="1" />
 			<button type="submit" class="btn btn-primary">Search</button>
 			<button type="reset" class="btn">Reset</button>
@@ -100,6 +63,7 @@
 <script type="text/javascript" src="media/js/jquery-1.10.1.min.js"></script>
 <script type="text/javascript" src="media/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="http://v2.bootcss.com/assets/js/bootstrap-typeahead.js"></script>
+<script type="text/javascript" src="media/js/jquery-ui-1.10.1.custom.min.js"></script>
 <script type="text/javascript">
 function load_list(){
 
@@ -205,6 +169,14 @@ $(function(){
 	        });
 	    }
 	});
+
+	$(".js-datepicker").datepicker({
+      changeMonth: true,
+      changeYear: true,
+      dateFormat: "m/d/yy",
+      minDate: new Date(2015, 1 - 1, 1),
+      maxDate: new Date()
+    });
 });
 </script>
 
