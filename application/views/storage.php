@@ -42,6 +42,7 @@
 </div>
 
 <div class="footer" id="footer">
+	<span class="hide"><a  data-toggle="modal"  data-target="#modal" href="" id="modal_trigger"></a></span>
 	<div class="container"><p>Powered by <a href="mailto:xeon.kang@qq.com">Kang</a></p></div>
 </div>
 
@@ -95,8 +96,8 @@ function render_list(data){
 				html += item.detail[j].item_from + '->';
 				html += item.detail[j].item_to + '</td><td>';
 				html += item.detail[j].quantity + '</td><td>';
-				html += item.detail[j].remark + '</td><td><a data-toggle="modal"  data-target="#modal" href="whout/detail/';
-				html += item.detail[j].oid + '">View order</a></td>';
+				html += item.detail[j].remark + '</td><td><a href="javascript:order_detail(';
+				html += item.detail[j].oid + ')">View order</a></td>';
 				html += '</tr>';
 			};
 			if(0==d.length) html += '<td colspan=5>';
@@ -155,6 +156,11 @@ function next_page(){
 	page = parseInt(page) + 1;
 	if(page>max) page = max;
 	goto_page(page);
+}
+
+function order_detail(oid){
+	$(".modal-body").load('whout/detail/'+oid);
+	$("#modal_trigger").trigger('click');
 }
 
 $(function(){
