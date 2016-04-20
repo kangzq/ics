@@ -40,6 +40,7 @@ class Wh extends CI_Model {
         $total = $db_total->count_all_results();
         $total_page = ceil(floatval($total/$page_size));
 
+        $this->db->order_by("`no` asc, item_sku asc");
         $this->db->limit( $page_size, ($page - 1) * $page_size);
         $query = $this->db->get();
 
