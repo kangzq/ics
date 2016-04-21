@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<title>Welcome_WAREHOUSE-IN</title>
-	<link href="media/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-	<link rel="shortcut icon" href="media/image/favicon.ico" />
+	<link href="<?php echo base_url();?>media/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="shortcut icon" href="<?php echo base_url();?>media/image/favicon.ico" />
 	<style type="text/css">
 	input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button { 
 	  -webkit-appearance: none; 
@@ -16,9 +16,9 @@
 <div class="container" style="width:90%">
 	<div class="navbar">
 	    <ul class="nav nav-tabs" style="width:100%">
-	      <li><a href="./">WAREHOUSE</a></li>
-	      <li class="active"><a href="whin">WAREHOUSE-IN</a></li>
-	      <li><a href="whout">WAREHOUSE-OUT</a></li>
+	      <li><a href="<?php echo base_url();?>">WAREHOUSE</a></li>
+	      <li class="active"><a href="<?php echo base_url();?>whin">WAREHOUSE-IN</a></li>
+	      <li><a href="<?php echo base_url();?>whout">WAREHOUSE-OUT</a></li>
 	    </ul>
 	</div>
 	<div class="clearfix"></div>
@@ -28,18 +28,38 @@
 		<div class="alert alert-error hide"><span>Opps! Change a few things up and try submitting again.</span><a href="#" class="close" data-dismiss="alert">&times;</a></div>
 
 		<form name="data_form" id="data_form" method="post" onsubmit="submit_form();return false;" class="form-horizontal">
-			<input type="text" id="input_no" name="input_no" placeholder="Order #" required maxlength="10" style="margin-bottom: 10px;"/>
+			<input type="text" id="input_no" name="input_no" placeholder="Order #" required maxlength="10" style="margin-bottom: 10px;" value="<?php if(isset($input_no)) echo $input_no ?>"/>
+			<?php if(!empty($order_id)){
+				echo '<a href="javascript:;" onclick="javascript:remove_order('.$order_id.')">Remove this order</a>';
+			} ?>
 			<table class="table table-bordered table-striped" id="item_data">
 				<thead><tr>
 					<th width="8%">有拖板?</th>
-					<th width="5%">P/NO</th>
+					<th width="5%">Pallet #</th>
 					<th width="30%">ITEM</th>
 					<th>箱號</th>
 					<th>箱數</th>
 					<th>QTY(@CTN)</th> 
 					<th>QTY</th>
+					<th>Action</th>
 				</tr></thead> 
 				<tbody>
+					<?php 
+						if(isset($items)){
+							foreach ($items as $item) {
+								echo '<tr><td>'.($item["is_packed"]?'Y':'N');
+								echo '</td><td style="text-align: right;">'.$item["pallet_id"];
+								echo '</td><td>'.$item["item_sku"];
+								echo '</td><td>'.$item["box_id"];
+								echo '</td><td style="text-align: right;">'.$item["box_num"];
+								echo '</td><td style="text-align: right;">'.$item["box_capacity"];
+								echo '</td><td style="text-align: right;">'.intval($item["box_num"]*$item["box_capacity"]).' PCS';
+								echo '</td><td style="text-align: center;"><a href="javascript:;" onclick="javascript:remove_item(\''.$item["id"].'\')">X</a></td></tr>';
+
+							}
+						}
+
+					?>
 				</tbody>
 			</table>
 			<input type="submit" value="Submit" class="btn btn-primary" />
@@ -53,21 +73,26 @@
 			<td><input type="text" name="item[_IDX_][box_id]" value="" placeholder="Box NO" class="input-mini" maxlength="10"/></td>
 			<td><input type="number" name="item[_IDX_][box_num]" value="" placeholder="Boxes #" class="input-mini box_num" min=1 onblur="calc_qty(this)"/></td>
 			<td><input type="number" name="item[_IDX_][box_capacity]" value="" class="input-mini box_cap" placeholder="QTY(@CTN)" min=1 onblur="calc_qty(this)"/></td>
-			<td><div class="input-append"><input type="number" name="item[_IDX_][quantity]" value="" placeholder="QTY" class="span2 input-mini item_qty" required min=1 /><span class="add-on">PCS</span></div></td></tr>
+			<td><div class="input-append"><input type="number" name="item[_IDX_][quantity]" value="" placeholder="QTY" class="span2 input-mini item_qty" required min=1 /><span class="add-on">PCS</span></div></td>
+			<td style="text-align: center;"><a href="javascript:;" onclick="javascript:remove_item(0)">X</a></td></tr>
 		</table>
 	</div>
 </div>
 
 
-<script type="text/javascript" src="media/js/jquery-1.10.1.min.js"></script>
-<script type="text/javascript" src="media/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url();?>media/js/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url();?>media/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 function submit_form(){
 	$(".alert").hide();
 	if(!confirm("Confirm submit the form?")) return false;
 
-	$.post("whin/create/", $("#data_form").serialize(), function(response){
+	$.post("<?php echo base_url();?>whin/create/", $("#data_form").serialize(), function(response){
 		if(1==response.status){
+			<?php if(!empty($order_id)){
+				echo 'alert("Update success.");';
+				echo 'window.location.reload();';
+			}?>
 			$(".alert-success").show();
 			$("#input_no").val('');
 			$("#item_data tbody").empty();
@@ -93,6 +118,39 @@ function calc_qty(item){
 	if(box_num>0&&box_cap>0){
 		tr.find('.item_qty').val(box_num*box_cap);
 	}
+}
+
+function remove_item(id){
+	if(!confirm("Confirm to remove this item?")) return false;
+	var tr = $(event.target).parents('tr');
+	
+	if(0!==id){
+		$.post("<?php echo base_url();?>whin/drop/", {"item_id": id}, function(response){
+			console.log(response);
+			if(1==response.status){
+				tr.remove();
+			}
+			else{
+				alert(response.msg);
+			}
+		});
+	}
+	else{
+		tr.remove();
+	}
+}
+
+function remove_order(id){
+	if(!confirm("Confirm to remove this full order?")) return false;
+	
+	$.post("<?php echo base_url();?>whin/drop/", {"order_id": id}, function(response){
+		if(1==response.status){
+			window.location.href = "<?php echo base_url() ?>whin/";
+		}
+		else{
+			alert(response.msg);
+		}
+	});
 }
 
 $(function(){
