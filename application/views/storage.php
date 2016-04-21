@@ -32,8 +32,7 @@
 		</form>
 	</div>
 	<table class="table table-bordered table-striped" id="item_list">
-		<tr><th rowspan=2>PO NO.</th><th rowspan=2>ITEM</th><th rowspan=2>TOTAL</th><th rowspan=2># REMAINING</th><th colspan=5 width="50%">DETAILS</th></tr>
-		<tr><td>Date</td><td>From->To</td><td># Boxs</td><td>Reamrk</td><td>Action</td></tr>
+		<tr><th>PO NO.</th><th>ITEM</th><th>TOTAL</th><th>箱號</th><th># REMAINING</th><th>入库单</th><th>出库明细</th></tr>
 	</table>
 	<div class="pagination pagination-right">
 	  <ul></ul>
@@ -81,14 +80,17 @@ function render_list(data){
 		for (var i = 0; i < cnt; i++) {
 			item = data.list[i];
 			var d = item.detail;
-			var rowspan = 1;
-			if(d.length>1) rowspan = d.length;
 
-			html = '<tr><td rowspan='+rowspan+'>';
-			html+= item.no + '</td><td rowspan='+rowspan+'>';
-			html+= item.item_sku + '</td><td rowspan='+rowspan+'>';
-			html+= item.box_num + '</td><td rowspan='+rowspan+'>';
-			html+= item.item_left + '</td>';
+			html = '<tr><td>';
+			html+= item.no + '</td><td>';
+			html+= item.item_sku + '</td><td>';
+			html+= item.box_num + '</td><td>';
+			html+= item.box_id + '</td><td>';
+			html+= item.item_left + '</td><td>';
+			html+= '<a href="'+base_url+'whin/detail/'+ item.oid + '">View</a></td><td>';
+			html+= '<a href="javascript:sku_out_detail('+ item.id + ')">View</a>';
+			
+			/*
 			for (var j = 0; j < item.detail.length; j++) {
 				if(j>0) html += '<tr>';
 				html += '<td>';
@@ -96,16 +98,17 @@ function render_list(data){
 				html += item.detail[j].item_from + '->';
 				html += item.detail[j].item_to + '</td><td>';
 				html += item.detail[j].quantity + '</td><td>';
-				html += item.detail[j].remark + '</td><td><a href="javascript:order_detail(';
+				html += item.detail[j].remark + '</td><td><a href="javascript:sku_out_detail(';
 				html += item.detail[j].oid + ')">View order</a></td>';
 				html += '</tr>';
 			};
 			if(0==d.length) html += '<td colspan=5>';
+			*/
 
 			html+= '</td></tr>';
 			$("#item_list").append(html);
 		};
-		$("#item_list tr:gt(1)").find("td:nth-child(3),td:nth-child(4),td:nth-child(7)").css({"text-align": "right"})
+		$("#item_list tr:gt(0)").find("td:nth-child(3),td:nth-child(5)").css({"text-align": "right"})
 		pagenation(data.page, data.total_page);
 	}
 	else{
@@ -158,8 +161,13 @@ function next_page(){
 	goto_page(page);
 }
 
-function order_detail(oid){
-	$(".modal-body").load('whout/detail/'+oid);
+function in_detail(id){
+	$(".modal-body").load('whin/detail/'+oid);
+	$("#modal_trigger").trigger('click');
+}
+
+function sku_out_detail(id){
+	$(".modal-body").load('whout/sku/'+id);
 	$("#modal_trigger").trigger('click');
 }
 
@@ -184,6 +192,7 @@ $(function(){
       maxDate: new Date()
     });
 });
+var base_url = '<?php echo base_url(); ?>';
 </script>
 
 </body>

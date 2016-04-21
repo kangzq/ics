@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://logic.f3322.org/ics/';
+$config['base_url']	= '';
 
 /*
 |--------------------------------------------------------------------------

@@ -58,6 +58,15 @@ class Whout extends CI_Controller {
 
 		$this->load->view('whout_order_detail', $data);
 	}
+
+	public function sku($id)
+	{
+		$this->load->model('Wh', 'wh', true);
+
+		$detail = $this->wh->get_item_out_detail($id);
+
+		$this->load->view('whout_sku_detail', ['list'=>$detail]);
+	}
 }
 
 /* End of file welcome.php */

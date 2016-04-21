@@ -38,6 +38,7 @@
 |
 */
 
+$route['whin/detail/(:num)'] = "whin/detail/$1";
 $route['whout/detail/(:num)'] = "whout/detail/$1";
 $route['default_controller'] = "warehouse";
 $route['404_override'] = '';

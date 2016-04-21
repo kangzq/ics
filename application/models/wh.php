@@ -17,9 +17,10 @@ class Wh extends CI_Model {
         if(0==$page_size) $page_size =10;
 
         // get storage.id with $item_sku
-        $this->db->select("s.id,oid,`no`,item_sku,item_left,box_num,box_capacity,o.created");
+        $this->db->select("s.id,oid,`no`,item_sku,item_left,box_num,box_id,box_capacity,o.created");
         $this->db->from('storage as s');
         $this->db->join('in_orders o', "s.oid=o.id");
+        $this->db->where('s.deleted', 0);
 
         // in orders no
         if(!empty($filter["pono"])){
@@ -47,7 +48,7 @@ class Wh extends CI_Model {
         $list = array();
         if($total > 0){
             foreach ($query->result_array() as $row){
-                $row['detail'] = $this->get_item_out_detail($row['id']);
+                // $row['detail'] = $this->get_item_out_detail($row['id']);
                 $row["created"] = strftime("%Y-%m-%d", $row["created"]);
                 $list[] = $row;
             }
@@ -73,6 +74,7 @@ class Wh extends CI_Model {
 
         $this->db->distinct("item_sku");
         $this->db->from("storage");
+        $this->db->where('deleted', 0);
         $this->db->like("item_sku", $sku_str);
         $this->db->limit(50);
         $this->db->order_by("created","desc");
